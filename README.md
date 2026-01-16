@@ -3,7 +3,7 @@
 Install agent skills onto your coding agents from any git repository.
 
 <!-- agent-list:start -->
-Supports **Opencode**, **Claude Code**, **Codex**, **Cursor**, and [9 more](#available-agents).
+Supports **Opencode**, **Claude Code**, **Codex**, **Cursor**, and [10 more](#available-agents).
 <!-- agent-list:end -->
 
 ## Quick Start
@@ -92,6 +92,7 @@ Skills can be installed to any of these supported agents. Use `-g, --global` to 
 | Goose | `.goose/skills/` | `~/.config/goose/skills/` |
 | Antigravity | `.agent/skills/` | `~/.gemini/antigravity/skills/` |
 | GitHub Copilot | `.github/skills/` | `~/.copilot/skills/` |
+| Clawdbot | `skills/` | `~/.clawdbot/skills/` |
 | Droid | `.factory/skills/` | `~/.factory/skills/` |
 | Gemini CLI | `.gemini/skills/` | `~/.gemini/skills/` |
 | Windsurf | `.windsurf/skills/` | `~/.codeium/windsurf/skills/` |
@@ -150,6 +151,7 @@ The CLI searches for skills in these locations within a repository:
 - `.goose/skills/`
 - `.agent/skills/`
 - `.github/skills/`
+- `./skills/`
 - `.factory/skills/`
 - `.gemini/skills/`
 - `.windsurf/skills/`
@@ -161,12 +163,12 @@ If no skills are found in standard locations, a recursive search is performed.
 
 Skills are generally compatible across agents since they follow a shared [Agent Skills specification](https://agentskills.io). However, some features may be agent-specific:
 
-| Feature | OpenCode | Claude Code | Codex | Cursor | Antigravity | Roo Code | Github Copilot | Amp |
-|---------|----------|-------------|-------|--------|-------------|----------|----------------|-----|
-| Basic skills | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
-| `allowed-tools` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
-| `context: fork` | No | Yes | No | No | No | No | No | No |
-| Hooks | No | Yes | No | No | No | No | No | No |
+| Feature | OpenCode | Claude Code | Codex | Cursor | Antigravity | Roo Code | Github Copilot | Amp | Clawdbot |
+|---------|----------|-------------|-------|--------|-------------|----------|----------------|-----|----------|
+| Basic skills | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
+| `allowed-tools` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
+| `context: fork` | No | Yes | No | No | No | No | No | No | No |
+| Hooks | No | Yes | No | No | No | No | No | No | No |
 
 ## Troubleshooting
 
@@ -196,6 +198,7 @@ Ensure you have write access to the target directory.
 - [Antigravity Skills Documentation](https://antigravity.google/docs/skills)
 - [GitHub Copilot Agent Skills](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
 - [Roo Code Skills Documentation](https://docs.roocode.com/features/skills)
+- [Clawdbot Skills Documentation](https://docs.clawd.bot/tools/skills)
 
 ## License
 

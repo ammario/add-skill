@@ -69,13 +69,61 @@ description: What this skill does
 
 ### Skill Lock File
 
-The `skill-lock.json` file (managed by `src/skill-lock.ts`) tracks installed skills in each project. It stores:
+The `.skill-lock.json` file (at `~/.agents/.skill-lock.json`) tracks globally installed skills. Managed by `src/skill-lock.ts`.
 
-- Skill name and source (GitHub URL, local path, etc.)
-- Installation timestamp
-- Target agents the skill was installed for
+**Lock File Format (v3):**
+```json
+{
+  "version": 3,
+  "skills": {
+    "skill-name": {
+      "source": "owner/repo",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/owner/repo.git",
+      "skillPath": "skills/skill-name/SKILL.md",
+      "contentHash": "sha256-of-skill-md-content",
+      "skillFolderHash": "github-tree-sha-for-folder",
+      "installedAt": "...",
+      "updatedAt": "..."
+    }
+  }
+}
+```
 
-This allows `npx skills list` to show installed skills and `npx skills remove` to cleanly uninstall them.
+**Key fields:**
+- `contentHash`: SHA-256 hash of SKILL.md content (v2+, kept for backwards compatibility)
+- `skillFolderHash`: GitHub tree SHA for the skill folder (v3+) - changes when ANY file in the folder changes
+- `skillPath`: Path to SKILL.md within the repo
+- `version`: Schema version (current: 3)
+
+**Version History:**
+- v1: Initial format (wiped on read)
+- v2: Added `contentHash` for SKILL.md-only change detection
+- v3: Added `skillFolderHash` for full folder change detection via GitHub Trees API
+
+**How hashes work:**
+
+v2 (`contentHash`) - hashes only SKILL.md content:
+```typescript
+import { createHash } from 'crypto';
+const hash = createHash('sha256').update(skillMdContent, 'utf-8').digest('hex');
+```
+
+v3 (`skillFolderHash`) - uses GitHub's tree SHA:
+- The server calls GitHub's Trees API: `GET /repos/{owner}/{repo}/git/trees/{branch}?recursive=1`
+- Extracts the `sha` for the skill folder entry (type: "tree")
+- This SHA is content-addressable: it changes when ANY file in the folder changes
+- Benefits: 1 API call per repo (not per file), detects changes to reference files, code examples, etc.
+
+**Update checking flow:**
+1. Client sends `skillFolderHash` (if available) + `contentHash` to `/check-updates`
+2. Server compares `skillFolderHash` first (v3 mode), falls back to `contentHash` (v2 mode)
+3. For non-GitHub sources (Mintlify, HuggingFace), only `contentHash` is available
+
+**Backwards compatibility:**
+- v2 lock files are auto-upgraded to v3 on read (skills keep working, just missing `skillFolderHash`)
+- v1 lock files are wiped (too old, users must reinstall)
+- Server accepts both v2 and v3 clients
 
 ### Provider System
 

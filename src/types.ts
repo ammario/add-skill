@@ -6,6 +6,7 @@ export type AgentType =
   | 'cline'
   | 'codex'
   | 'command-code'
+  | 'continue'
   | 'crush'
   | 'cursor'
   | 'droid'

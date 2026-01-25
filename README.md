@@ -90,6 +90,7 @@ Skills can be installed to any of these supported agents. Use `-g, --global` to 
 | Cline | `cline` | `.cline/skills/` | `~/.cline/skills/` |
 | Codex | `codex` | `.codex/skills/` | `~/.codex/skills/` |
 | Command Code | `command-code` | `.commandcode/skills/` | `~/.commandcode/skills/` |
+| Continue | `continue` | `.continue/skills/` | `~/.continue/skills/` |
 | Crush | `crush` | `.crush/skills/` | `~/.config/crush/skills/` |
 | Cursor | `cursor` | `.cursor/skills/` | `~/.cursor/skills/` |
 | Droid | `droid` | `.factory/skills/` | `~/.factory/skills/` |
@@ -170,6 +171,7 @@ The CLI searches for skills in these locations within a repository:
 - `.cline/skills/`
 - `.codex/skills/`
 - `.commandcode/skills/`
+- `.continue/skills/`
 - `.crush/skills/`
 - `.cursor/skills/`
 - `.factory/skills/`

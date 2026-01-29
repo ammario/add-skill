@@ -591,7 +591,7 @@ async function handleRemoteSkill(
   p.outro(pc.green('Done!'));
 
   // Prompt for find-skills after successful install
-  await promptForFindSkills();
+  await promptForFindSkills(options);
 }
 
 /**
@@ -1031,7 +1031,7 @@ async function handleWellKnownSkills(
   p.outro(pc.green('Done!'));
 
   // Prompt for find-skills after successful install
-  await promptForFindSkills();
+  await promptForFindSkills(options);
 }
 
 /**
@@ -1336,7 +1336,7 @@ async function handleDirectUrlSkillLegacy(
   p.outro(pc.green('Done!'));
 
   // Prompt for find-skills after successful install
-  await promptForFindSkills();
+  await promptForFindSkills(options);
 }
 
 export async function runAdd(args: string[], options: AddOptions = {}): Promise<void> {
@@ -1889,7 +1889,7 @@ export async function runAdd(args: string[], options: AddOptions = {}): Promise<
     p.outro(pc.green('Done!'));
 
     // Prompt for find-skills after successful install
-    await promptForFindSkills();
+    await promptForFindSkills(options);
   } catch (error) {
     if (error instanceof GitCloneError) {
       p.log.error(pc.red('Failed to clone repository'));
@@ -1922,10 +1922,13 @@ async function cleanup(tempDir: string | null) {
  * Prompt user to install the find-skills skill after their first installation.
  * This helps users discover skills via their coding agent.
  * The prompt is only shown once - if dismissed, it's stored in the lock file.
+ *
+ * @param options - Installation options, used to check for -y/--yes flag
  */
-async function promptForFindSkills(): Promise<void> {
+async function promptForFindSkills(options?: AddOptions): Promise<void> {
   // Skip if already dismissed or not in interactive mode
   if (!process.stdin.isTTY) return;
+  if (options?.yes) return;
 
   try {
     const dismissed = await isPromptDismissed('findSkillsPrompt');

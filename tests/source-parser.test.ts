@@ -202,9 +202,9 @@ describe('getOwnerRepo', () => {
     expect(getOwnerRepo(parsed)).toBeNull();
   });
 
-  it('getOwnerRepo - custom git host returns null', () => {
+  it('getOwnerRepo - custom git host extracts owner/repo', () => {
     const parsed = parseSource('https://git.example.com/owner/repo.git');
-    expect(getOwnerRepo(parsed)).toBeNull();
+    expect(getOwnerRepo(parsed)).toBe('owner/repo');
   });
 
   it('getOwnerRepo - SSH format returns null', () => {
@@ -212,9 +212,51 @@ describe('getOwnerRepo', () => {
     expect(getOwnerRepo(parsed)).toBeNull();
   });
 
-  it('getOwnerRepo - private GitLab instance returns null', () => {
-    // This falls through to 'git' type since it's not gitlab.com
+  it('getOwnerRepo - private GitLab instance extracts owner/repo', () => {
     const parsed = parseSource('https://gitlab.company.com/team/repo');
-    expect(getOwnerRepo(parsed)).toBeNull();
+    expect(getOwnerRepo(parsed)).toBe('team/repo');
+  });
+
+  it('getOwnerRepo - self-hosted git with .git suffix', () => {
+    const parsed = parseSource('https://git.internal.io/myteam/skills.git');
+    expect(getOwnerRepo(parsed)).toBe('myteam/skills');
+  });
+
+  it('getOwnerRepo - URL with query string', () => {
+    const parsed = { type: 'git', url: 'https://git.example.com/owner/repo?ref=main' } as const;
+    expect(getOwnerRepo(parsed)).toBe('owner/repo');
+  });
+
+  it('getOwnerRepo - URL with fragment', () => {
+    const parsed = { type: 'git', url: 'https://git.example.com/owner/repo#readme' } as const;
+    expect(getOwnerRepo(parsed)).toBe('owner/repo');
+  });
+
+  it('getOwnerRepo - URL with .git and query string', () => {
+    const parsed = { type: 'git', url: 'https://git.example.com/owner/repo.git?ref=main' } as const;
+    expect(getOwnerRepo(parsed)).toBe('owner/repo');
+  });
+
+  it('getOwnerRepo - GitLab subgroup (2 levels)', () => {
+    const parsed = { type: 'git', url: 'https://gitlab.com/group/subgroup/repo' } as const;
+    expect(getOwnerRepo(parsed)).toBe('group/subgroup/repo');
+  });
+
+  it('getOwnerRepo - GitLab subgroup (3 levels)', () => {
+    const parsed = { type: 'git', url: 'https://gitlab.com/org/team/project/repo.git' } as const;
+    expect(getOwnerRepo(parsed)).toBe('org/team/project/repo');
+  });
+
+  it('getOwnerRepo - GitLab subgroup with query string', () => {
+    const parsed = { type: 'git', url: 'https://gitlab.com/group/subgroup/repo?ref=main' } as const;
+    expect(getOwnerRepo(parsed)).toBe('group/subgroup/repo');
+  });
+
+  it('getOwnerRepo - self-hosted GitLab with subgroups', () => {
+    const parsed = {
+      type: 'git',
+      url: 'https://gitlab.company.com/division/team/repo.git',
+    } as const;
+    expect(getOwnerRepo(parsed)).toBe('division/team/repo');
   });
 });

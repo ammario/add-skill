@@ -240,7 +240,7 @@ export const agents: Record<AgentType, AgentConfig> = {
   mux: {
     name: 'mux',
     displayName: 'Mux',
-    skillsDir: '.mux/skills',
+    skillsDir: '.agents/skills',
     globalSkillsDir: join(home, '.mux/skills'),
     detectInstalled: async () => {
       return existsSync(join(home, '.mux'));
